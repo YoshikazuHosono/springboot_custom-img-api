@@ -43,10 +43,22 @@ public class DemoController {
             System.out.println(availableFont.getName());
         });
 
-        // 画像ファイルに文字を書き込む
+        // 画像読み込み
         BufferedImage bufferedImage = ImageIO.read(imageResource.getInputStream());
+
+        // 画像データの、画板みたいなオブジェクトを取り出す
         Graphics g = bufferedImage.getGraphics();
-        g.setFont(new Font("IPAゴシック", Font.PLAIN, 50));
+
+        // 書き込んだ文字にアンチエイリアスを効かせるための設定
+        // これをやらないと、描画された文字がカクカクになる
+        // FIXME もっとましな書き方はないのか、、、instanceof嫌い、、、
+        if (g instanceof Graphics2D) {
+            Graphics2D gg = ((Graphics2D) g);
+            gg.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
+
+        // 画像ファイルに文字を書き込む
+        g.setFont(new Font(font.getName(), Font.PLAIN, 50));
         g.setColor(new Color(255, 255, 255));
         g.drawString("hello " + name + "!", 100, 100);
 
